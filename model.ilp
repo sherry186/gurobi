@@ -1,0 +1,14 @@
+\ Model peg1_copy
+\ LP format - for model browsing. Use MPS format to capture full model detail.
+Minimize
+ 
+Subject To
+ same_job1[10,0,1]: - 1e+06 z111211 + v111 - v211 <= -3
+ samejob2[10,0,1]: 1e+06 z111211 - v111 + v211 <= 999998.6
+ split1-2[10,0]: - v111 + v211 = 1.4
+Bounds
+ v111 free
+ v211 free
+Binaries
+ z111211
+End
