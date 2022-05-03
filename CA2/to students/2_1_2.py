@@ -145,7 +145,7 @@ def chooseMachineByFormulation(pi, pj, MT, M, D):
 
 
 
-df = pd.read_csv('./data/instance 1.csv')
+df = pd.read_csv("C:/Users/user/gurobi/CA2/to students/data/instance1.csv")
 # print(df)
 # print(df['Due Time'].size)
 
@@ -177,16 +177,46 @@ for j in range(J):
     
     Scheduled.append(0)
 
-print("P", P)
-print("D", D)
-print("M", M)
+# print("P", P)
+# print("D", D)
+# print("M", M)
 
-print(compareTardy(0, 9, 0, 1, P, D,0, J, Scheduled))
-print(compareMakeSpan(0, 9, 0, 1, P, len(MT), J))
-print(chooseMachineByProcessTime(0, 3, MT, M))
-
-
+# print(compareTardy(0, 9, 0, 1, P, D,0, J, Scheduled))
+# print(compareMakeSpan(0, 9, 0, 1, P, len(MT), J))
+# print(chooseMachineByProcessTime(0, 3, MT, M))
 
 
+
+
+### huristic part
+resultList = {} ##(i, j)->[m, starttime]  list, Pij assigned to m on starttime// normal index
+for k in range(2 * J):
+    chosenMachineInd, startTime = chooseMachineByProcessTime(MT)
+    print(chosenMachineInd, startTime)
+    
+    data = [] ### [i, j, startime] Pij, last process's startime
+    for j in range(len(Scheduled)):
+        if Scheduled[j] != 2 and chosenMachineInd+1 in M[Scheduled[j], j]:
+            if Scheduled[j] == 1:
+                data.append([Scheduled[j], j, resultList[0, j][1]])
+            else:
+                data.append([Scheduled[j], j, 0])
+    
+    print(data)
+    # break
+    if data != []:
+        bestJob = data[0]
+        for u in range(1, len(data)):
+            if compareTardy(bestJob[0], bestJob[1], data[u][0], data[u][1], P, D, max(startTime, bestJob[2]), max(startTime, data[u][2]), J, Scheduled):
+                bestJob = data[u]
+            elif equalTardy(bestJob[0], bestJob[1], data[u][0], data[u][1], P, D, max(startTime, bestJob[2]), max(startTime, data[u][2]), J, Scheduled) and compareProcessTime(bestJob[0], bestJob[1], data[u][0], data[u][1], P):
+                bestJob = data[u]
+
+        
+        MT[chosenMachineInd] = max(startTime, bestJob[2]) + P[bestJob[0],bestJob[1]]
+        Scheduled[bestJob[1]] += 1
+        resultList[bestJob[0], bestJob[1]] = [chosenMachineInd, max(startTime, bestJob[2])]
+
+print("result list", resultList)
 
 
