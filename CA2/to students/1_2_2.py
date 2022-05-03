@@ -94,16 +94,16 @@ Output: p1's slack time > p2's slack time?
 def compareSlackTime(p1i, p1j, p2i, p2j, P, M, D):
     p1SlackTime = D[p1j] - (min(MT) + P[p1i, p1j])
     p2SlackTime = D[p2j] - (min(MT) + P[p2i, p2j])
-    print(p1SlackTime)
-    print(p2SlackTime)
+    # print(p1SlackTime)
+    # print(p2SlackTime)
 
     return p1SlackTime > p2SlackTime
 
 def equalSlackTime(p1i, p1j, p2i, p2j, P, M, D):
     p1SlackTime = D[p1j] - (min(MT) + P[p1i, p1j])
     p2SlackTime = D[p2j] - (min(MT) + P[p2i, p2j])
-    print(p1SlackTime)
-    print(p2SlackTime)
+    # print(p1SlackTime)
+    # print(p2SlackTime)
 
     return p1SlackTime == p2SlackTime
 
