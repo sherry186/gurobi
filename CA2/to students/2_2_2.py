@@ -1,5 +1,10 @@
 import pandas as pd
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
+serverIP = os.getenv("myPath")
+print(serverIP)
 
 '''
 compare tardy amount
@@ -103,8 +108,8 @@ def chooseMachineByProcessTime( MT):
 
 ### def
 
-
-df = pd.read_csv("C:/Users/user/gurobi/CA2/to students/data/instance1.csv")
+df = pd.read_csv(serverIP)
+# df = pd.read_csv("C:/Users/user/gurobi/CA2/to students/data/instance1.csv")
 # print(df)
 # print(df['Due Time'].size)
 
