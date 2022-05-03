@@ -55,6 +55,7 @@ def chooseMachineByProcessTime( MT):
     return chosenM, min
 
 df = pd.read_csv(serverIP)
+# df = pd.read_csv("C:/Users/user/gurobi/CA2/to students/data/instance1.csv")
 
 J = df['Job ID'].size
 MT = [0, 0, 0, 0, 0] # the amount of time Mi have processed
