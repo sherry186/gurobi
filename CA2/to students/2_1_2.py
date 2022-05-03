@@ -198,7 +198,7 @@ for k in range(2 * J):
     for j in range(len(Scheduled)):
         if Scheduled[j] != 2 and chosenMachineInd+1 in M[Scheduled[j], j]:
             if Scheduled[j] == 1:
-                data.append([Scheduled[j], j, resultList[0, j][1]])
+                data.append([Scheduled[j], j, resultList[0, j][1]+ P[0, j]])
             else:
                 data.append([Scheduled[j], j, 0])
     
