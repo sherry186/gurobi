@@ -104,7 +104,7 @@ def chooseMachineByProcessTime( MT):
 ### def
 
 
-df = pd.read_csv("C:/Users/user/Desktop/OR110-2_case02_relatedFiles (1)/to students/data/instance1.csv")
+df = pd.read_csv("C:/Users/user/gurobi/CA2/to students/data/instance1.csv")
 # print(df)
 # print(df['Due Time'].size)
 
