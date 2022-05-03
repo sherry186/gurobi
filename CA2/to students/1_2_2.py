@@ -165,17 +165,42 @@ def chooseMachineByFormulation(pi, pj, MT, M, D):
 
 
 # df = pd.read_csv("C:/Users/user/gurobi/CA2/to students/data/instance1.csv")
+### def
+
 df = pd.read_csv(serverIP)
+# df = pd.read_csv("C:/Users/user/gurobi/CA2/to students/data/instance1.csv")
 # print(df)
 # print(df['Due Time'].size)
 
+max_amount = 0
+for index, row in df.iterrows():
+    x1 = row['Stage-1 Machines'].split(',')
+    for element in x1:
+        num = int(element)
+        if(num > max_amount):
+            max_amount = num
+            
+    temp = row['Stage-2 Machines']
+    if(pd.isna(temp) == False):
+        x2 = temp.split(',')
+        for element in x2:
+            num = int(element)
+            if(num > max_amount):
+                max_amount = num
+
+
 J = df['Job ID'].size
-MT = [0, 0, 0, 0, 0] # the amount of time Mi have processed
-Scheduled = []
+MT = [0 for i in range(0, max_amount)] # the amount of time Mi have processed
+Mdefault = [i for i in range(1, max_amount+1)]
+
+print("MT", MT)
+print("Mdefault:", Mdefault)
+
+Scheduled = [] ## job j's next is which stage?
 
 P = {} #Pij
 D = {} #Dj
-M = {} #Pij can do on M
+M = {} #Pij can do on Mlist ##normal index
 
 for j in range(J):
     P[0,j] = df['Stage-1 Processing Time'][j]
@@ -188,22 +213,26 @@ for j in range(J):
     if M[0, j] != ['nan']:
         M[0,j] = [int(i) for i in M[0,j]]
     else:
-        M[0,j] = [1, 2, 3, 4, 5]
+        M[0,j] = Mdefault
 
     if M[1,j] != ['nan']:
         M[1,j] = [int(i) for i in M[1,j]]
     else:
-        M[1,j] = [1, 2, 3, 4, 5]
+        M[1,j] = Mdefault
     
     Scheduled.append(0)
 
-# print("P", P)
-# print("D", D)
-# print("M", M)
+print("P", P)
+print("D", D)
+print("M", M)
 
-# print(compareTardy(0, 9, 0, 1, P, D,0, J, Scheduled))
-# print(compareMakeSpan(0, 9, 0, 1, P, len(MT), J))
-# print(chooseMachineByProcessTime(0, 3, MT, M))
+print(compareTardy(0, 9, 0, 1, P, D,0, 0, J, Scheduled))
+print(compareMakeSpan(0, 9, 0, 1, P, len(MT), J))
+
+## -----------------------
+
+machinePriortylist = chooseMachineByProcessTime(MT)
+print("machinePriortylist1", machinePriortylist)
 
 
 
