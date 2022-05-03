@@ -36,7 +36,7 @@ def compareTardy(p1i, p1j, p2i, p2j, P, D, startTime1, startTime2, J, Scheduled)
                 if startTime2 + P[p2i, p2j]  + P[1, j] - D[j] < 0:
                     p2Count += 1
 
-    print(p1Count, p2Count)
+    # print(p1Count, p2Count)
     
     return p1Count > p2Count 
 
@@ -65,7 +65,7 @@ def equalTardy(p1i, p1j, p2i, p2j, P, D, startTime1, startTime2, J, Scheduled):
                 if startTime2 + P[p2i, p2j]  + P[1, j] - D[j] < 0:
                     p2Count += 1
 
-    print(p1Count, p2Count)
+    # print(p1Count, p2Count)
     
     return p1Count == p2Count 
 
@@ -83,8 +83,8 @@ def compareMakeSpan(p1i, p1j, p2i, p2j, P, M, J):
     
     p1MakeSpan = P[p1i, p1j] + (sum - P[p1i, p1j])/(J*2-1)*((J*2)/M -1)
     p2MakeSpan = P[p2i, p2j] + (sum - P[p2i, p2j])/(J*2-1)*((J*2)/M -1)
-    print(p1MakeSpan)
-    print(p2MakeSpan)
+    # print(p1MakeSpan)
+    # print(p2MakeSpan)
 
     return p1MakeSpan > p2MakeSpan
 
@@ -94,15 +94,37 @@ chooseMachineByProcessTime
 Input: MT
 Output: chosen machine index and it's current processing time
 '''
-def chooseMachineByProcessTime( MT):
-    chosenM = 0
-    min = MT[0]
+def chooseMachineByProcessTime(MT):
+    # chosenM = 0
+    # min = MT[0]
+    # for i in range(len(MT)):
+    #     if(MT[i] < min):
+    #         min = MT[i]
+    #         chosenM = i
+    MTdic = {}
     for i in range(len(MT)):
-        if(MT[i] < min):
-            min = MT[i]
-            chosenM = i
+        MTdic[i] = MT[i]
     
-    return chosenM, min
+    returnList = sorted(MTdic.items(), key=lambda x:x[1])
+
+    return returnList
+
+
+'''
+chooseMachineByFormulation
+Input: pi, pj, MT, M, D
+Output: chosen machine index
+'''
+def chooseMachineByFormulation(pi, pj, MT, M, D):
+    chosenM = 0
+    minMT = 99999
+    for i in range(len(MT)):
+        if(D[pi, pj] - (MT[i] + P[pi, pj]) < minMT and i in M[pi, pj]):
+            minMT = D[pi, pj] - (MT[i] + P[pi, pj])
+            chosenM = i
+
+    return chosenM
+
 
     
 
@@ -132,12 +154,12 @@ for j in range(J):
     if M[0, j] != ['nan']:
         M[0,j] = [int(i) for i in M[0,j]]
     else:
-        M[0,j] = []
+        M[0,j] = [1, 2, 3, 4, 5]
 
     if M[1,j] != ['nan']:
         M[1,j] = [int(i) for i in M[1,j]]
     else:
-        M[1,j] = []
+        M[1,j] = [1, 2, 3, 4, 5]
     
     Scheduled.append(0)
 
@@ -151,21 +173,31 @@ for j in range(J):
 
 ### -----------------------
 
+# machinePriortylist = chooseMachineByProcessTime(MT)
+# print(machinePriortylist)
+
 ### huristic part
-resultList = {} ##(i, j)->[m, starttime]  list, Pij assigned to m on starttime// normal index
-for k in range(2 * J):
-    chosenMachineInd, startTime = chooseMachineByProcessTime(MT)
-    print(chosenMachineInd, startTime)
-    
+resultList = {} ##(i, j)->[m, starttime, endtime]  list, Pij assigned to m on starttime// normal index
+while 0 in Scheduled or 1 in Scheduled:
+    # print(chosenMachineInd, startTime)
+    print("Scheduled:", Scheduled)
+    machinePriortylist = chooseMachineByProcessTime(MT)
+    print("machine priority list:", machinePriortylist)
     data = [] ### [i, j, startime] Pij, last process's startime
-    for j in range(len(Scheduled)):
-        if Scheduled[j] != 2 and chosenMachineInd+1 in M[Scheduled[j], j]:
-            if Scheduled[j] == 1:
-                data.append([Scheduled[j], j, resultList[0, j][1]+ P[0, j]])
-            else:
-                data.append([Scheduled[j], j, 0])
-    
-    print(data)
+    priorityInd = 0
+    chosenMachineInd, startTime = 0, 0
+    while(len(data) == 0):
+        chosenMachineInd, startTime = machinePriortylist[priorityInd][0], machinePriortylist[priorityInd][1]
+        for j in range(len(Scheduled)):
+            if Scheduled[j] != 2 and chosenMachineInd+1 in M[Scheduled[j], j]:
+                if Scheduled[j] == 1:
+                    # data.append([Scheduled[j], j, resultList[0, j][1]+ P[0, j]])
+                    data.append([Scheduled[j], j, resultList[0, j][2]])
+                else:
+                    data.append([Scheduled[j], j, 0])
+        priorityInd += 1    
+     
+    print("data:", data)
     # break
     if data != []:
         bestJob = data[0]
@@ -178,13 +210,32 @@ for k in range(2 * J):
         
         MT[chosenMachineInd] = max(startTime, bestJob[2]) + P[bestJob[0],bestJob[1]]
         Scheduled[bestJob[1]] += 1
-        resultList[bestJob[0], bestJob[1]] = [chosenMachineInd, max(startTime, bestJob[2])]
+        resultList[bestJob[0], bestJob[1]] = [chosenMachineInd, max(startTime, bestJob[2]), max(startTime, bestJob[2]) + P[bestJob[0],bestJob[1]]]
+
 
 print("result list", resultList)
 
+## result
+tardyAmount = 0
+makespan = 0
+for j in range(J):
+    completionTime = 0
+    if((1, j) in resultList.keys()):
+        completionTime = resultList[1, j][2]
+    else:
+        completionTime = resultList[0, j][2]
+
+
+    if(completionTime - D[j] > 0):
+        tardyAmount += 1
+    
+    if(completionTime > makespan):
+        makespan = completionTime
+
+print("makespan:", makespan)
+print("tardy amount:", tardyAmount)
 
         
-
     
     
 
