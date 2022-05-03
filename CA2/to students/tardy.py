@@ -35,6 +35,36 @@ def compareTardy(p1i, p1j, p2i, p2j, P, D, startTime, J, Scheduled):
     
     return p1Count > p2Count 
 
+def equalTardy(p1i, p1j, p2i, p2j, P, D, startTime1, startTime2, J, Scheduled):
+
+    ## counting p1
+    p1Count = 0
+    for j in range(J):
+        if j != p1j:
+            if Scheduled[j] == 0:
+                if startTime1 + P[p1i, p1j] + P[0, j] + P[1, j] - D[j] < 0:
+                    p1Count += 1
+            elif Scheduled[j] == 1:
+                if startTime1 + P[p1i, p1j]  + P[1, j] - D[j] < 0:
+                    p1Count += 1
+                
+    
+    ## counting p2
+    p2Count = 0
+    for j in range(J):
+        if j != p2j:
+            if Scheduled[j] == 0:
+                if startTime2 + P[p2i, p2j] + P[0, j] + P[1, j] - D[j] < 0:
+                    p2Count += 1
+            elif Scheduled[j] == 1:
+                if startTime2 + P[p2i, p2j]  + P[1, j] - D[j] < 0:
+                    p2Count += 1
+
+    print(p1Count, p2Count)
+    
+    return p1Count == p2Count 
+
+
 '''
 compare make span
 Input: p1i, p1j, p2i, p2j, P, Machine amount, J
@@ -83,19 +113,20 @@ def compareProcessTime(p1i, p1j, p2i, p2j, P):
 
 '''
 chooseMachineByProcessTime
-Input: pi, pj, MT, M
-Output: chosen machine index
+Input: MT
+Output: chosen machine index and it's current processing time
 '''
-def chooseMachineByProcessTime(pi, pj, MT, M):
+def chooseMachineByProcessTime( MT):
     chosenM = 0
     min = MT[0]
     for i in range(len(MT)):
-        if(MT[i] < min and i in M[pi, pj]):
+        if(MT[i] < min):
             min = MT[i]
             chosenM = i
     
-    return chosenM
+    return chosenM, min
 
+    
 
 '''
 chooseMachineByFormulation
