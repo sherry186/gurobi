@@ -91,19 +91,19 @@ Input: p1i, p1j, p2i, p2j, P, MT, D
 Output: p1's slack time > p2's slack time?
 '''
 
-def compareSlackTime(p1i, p1j, p2i, p2j, P, M, D):
-    p1SlackTime = D[p1j] - (min(MT) + P[p1i, p1j])
-    p2SlackTime = D[p2j] - (min(MT) + P[p2i, p2j])
-    # print(p1SlackTime)
-    # print(p2SlackTime)
+def compareSlackTime(p1i, p1j, p2i, p2j, P, startTime1, startTime2, D):
+    p1SlackTime = D[p1j] - (startTime1 + P[p1i, p1j])
+    p2SlackTime = D[p2j] - (startTime2 + P[p2i, p2j])
+    print(p1SlackTime)
+    print(p2SlackTime)
 
     return p1SlackTime > p2SlackTime
 
-def equalSlackTime(p1i, p1j, p2i, p2j, P, M, D):
-    p1SlackTime = D[p1j] - (min(MT) + P[p1i, p1j])
-    p2SlackTime = D[p2j] - (min(MT) + P[p2i, p2j])
-    # print(p1SlackTime)
-    # print(p2SlackTime)
+def equalSlackTime(p1i, p1j, p2i, p2j, P, startTime1, startTime2, D):
+    p1SlackTime = D[p1j] - (startTime1 + P[p1i, p1j])
+    p2SlackTime = D[p2j] - (startTime2 + P[p2i, p2j])
+    print(p1SlackTime)
+    print(p2SlackTime)
 
     return p1SlackTime == p2SlackTime
 
@@ -214,9 +214,9 @@ for k in range(2 * J):
     if data != []:
         bestJob = data[0]
         for u in range(1, len(data)):
-            if compareSlackTime(bestJob[0], bestJob[1], data[u][0], data[u][1], P, M, D):
+            if compareSlackTime(bestJob[0], bestJob[1], data[u][0], data[u][1], P, max(startTime, bestJob[2]), max(startTime, data[u][2]), D):
                 bestJob = data[u]
-            elif equalSlackTime(bestJob[0], bestJob[1], data[u][0], data[u][1], P, M, D) and compareMakeSpan(bestJob[0], bestJob[1], data[u][0], data[u][1], P, len(MT), J):
+            elif equalSlackTime(bestJob[0], bestJob[1], data[u][0], data[u][1], P, max(startTime, bestJob[2]), max(startTime, data[u][2]), D) and compareMakeSpan(bestJob[0], bestJob[1], data[u][0], data[u][1], P, len(MT), J):
                 bestJob = data[u]
 
         
