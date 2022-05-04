@@ -1,6 +1,8 @@
 import pandas as pd
 import os
 from dotenv import load_dotenv
+from tardy import gantt_plot_2_3
+
 load_dotenv()
 
 serverIP = os.getenv("myPath")
@@ -250,6 +252,39 @@ def huristic2_2_2(fileName):
 
 
     # print("result list", resultList)
+    print("fileName", fileName)
+    x = []
+    for j in range(J):
+        temp = []
+        for i in range(2):
+            temp.append(resultList[i, j][2])
+        x.append(temp)
+
+    print('x', x)
+
+    Plist = []
+    for j in range(J):
+        temp = []
+        for i in range(2):
+            temp.append(P[i,j])
+        Plist.append(temp)
+    print('Plist', Plist)
+    
+    y = []
+    for j in range(J):
+        tempj = []
+        for i in range(2):
+            tempi = []
+            for m in range(max_amount):
+                if(resultList[i,j][0] == m):
+                    tempi.append(1)
+                else:
+                    tempi.append(0)
+            tempj.append(tempi)
+        y.append(tempj)
+    print('y', y)
+    
+    gantt_plot_2_3(x, Plist, y, 3)
 
     ## result
     tardyAmount = 0
