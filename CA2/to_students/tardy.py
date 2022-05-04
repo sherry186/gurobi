@@ -1,6 +1,7 @@
 import pandas as pd
 import os
 from dotenv import load_dotenv
+
 load_dotenv()
 
 serverIP = os.getenv("myPath")
@@ -88,6 +89,20 @@ def compareMakeSpan(p1i, p1j, p2i, p2j, P, M, J):
 
     return p1MakeSpan > p2MakeSpan
 
+'''
+compare slack time
+Input: p1i, p1j, p2i, p2j, P, MT, D
+Output: p1's slack time > p2's slack time?
+'''
+
+def compareSlackTime(p1i, p1j, p2i, p2j, P, M, D):
+    p1SlackTime = D[p1j] - (min(MT) + P[p1i, p1j])
+    p2SlackTime = D[p2j] - (min(MT) + P[p2i, p2j])
+    print(p1SlackTime)
+    print(p2SlackTime)
+
+    return p1SlackTime > p2SlackTime
+
 
 '''
 chooseMachineByProcessTime
@@ -111,24 +126,16 @@ def chooseMachineByProcessTime(MT):
 
 
 '''
-chooseMachineByFormulation
-Input: pi, pj, MT, M, D
-Output: chosen machine index
+compare process time
+Input: p1i, p1j, p2i, p2j, P
+Output: p1's process time > p2's process time?
 '''
-def chooseMachineByFormulation(pi, pj, MT, M, D):
-    chosenM = 0
-    minMT = 99999
-    for i in range(len(MT)):
-        if(D[pi, pj] - (MT[i] + P[pi, pj]) < minMT and i in M[pi, pj]):
-            minMT = D[pi, pj] - (MT[i] + P[pi, pj])
-            chosenM = i
 
-    return chosenM
-
+def compareProcessTime(p1i, p1j, p2i, p2j, P):
+    
+    return P[p1i, p1j] > P[p2i, p2j]
 
     
-
-### def
 
 ### def
 
@@ -199,81 +206,7 @@ print(compareMakeSpan(0, 9, 0, 1, P, len(MT), J))
 machinePriortylist = chooseMachineByProcessTime(MT)
 print("machinePriortylist1", machinePriortylist)
 
-# print("P", P)
-# print("D", D)
-# print("M", M)
 
-# print(compareTardy(0, 9, 0, 1, P, D,0, J, Scheduled))
-# print(compareMakeSpan(0, 9, 0, 1, P, len(MT), J))
-# print(chooseMachineByProcessTime(0, 3, MT, M))
-
-### -----------------------
-
-# machinePriortylist = chooseMachineByProcessTime(MT)
-# print(machinePriortylist)
-
-### huristic part
-resultList = {} ##(i, j)->[m, starttime, endtime]  list, Pij assigned to m on starttime// normal index
-while 0 in Scheduled or 1 in Scheduled:
-    # print(chosenMachineInd, startTime)
-    print("Scheduled:", Scheduled)
-    machinePriortylist = chooseMachineByProcessTime(MT)
-    print("machine priority list:", machinePriortylist)
-    data = [] ### [i, j, startime] Pij, last process's startime
-    priorityInd = 0
-    chosenMachineInd, startTime = 0, 0
-    while(len(data) == 0):
-        chosenMachineInd, startTime = machinePriortylist[priorityInd][0], machinePriortylist[priorityInd][1]
-        for j in range(len(Scheduled)):
-            if Scheduled[j] != 2 and chosenMachineInd+1 in M[Scheduled[j], j]:
-                if Scheduled[j] == 1:
-                    # data.append([Scheduled[j], j, resultList[0, j][1]+ P[0, j]])
-                    data.append([Scheduled[j], j, resultList[0, j][2]])
-                else:
-                    data.append([Scheduled[j], j, 0])
-        priorityInd += 1    
-     
-    print("data:", data)
-    # break
-    if data != []:
-        bestJob = data[0]
-        for u in range(1, len(data)):
-            if compareTardy(bestJob[0], bestJob[1], data[u][0], data[u][1], P, D, max(startTime, bestJob[2]), max(startTime, data[u][2]), J, Scheduled):
-                bestJob = data[u]
-            elif equalTardy(bestJob[0], bestJob[1], data[u][0], data[u][1], P, D, max(startTime, bestJob[2]), max(startTime, data[u][2]), J, Scheduled) and compareMakeSpan(bestJob[0], bestJob[1], data[u][0], data[u][1], P, len(MT), J):
-                bestJob = data[u]
-
-        
-        MT[chosenMachineInd] = max(startTime, bestJob[2]) + P[bestJob[0],bestJob[1]]
-        Scheduled[bestJob[1]] += 1
-        resultList[bestJob[0], bestJob[1]] = [chosenMachineInd, max(startTime, bestJob[2]), max(startTime, bestJob[2]) + P[bestJob[0],bestJob[1]]]
-
-
-print("result list", resultList)
-
-## result
-tardyAmount = 0
-makespan = 0
-for j in range(J):
-    completionTime = 0
-    if((1, j) in resultList.keys()):
-        completionTime = resultList[1, j][2]
-    else:
-        completionTime = resultList[0, j][2]
-
-
-    if(completionTime - D[j] > 0):
-        tardyAmount += 1
-    
-    if(completionTime > makespan):
-        makespan = completionTime
-
-print("makespan:", makespan)
-print("tardy amount:", tardyAmount)
-
-        
-    
-    
 
 
 
