@@ -4,6 +4,47 @@ from gurobipy import *
 import matplotlib.pyplot as plt
 import numpy as np
 
+#Gant-related stuff
+import plotly.express as px
+
+# display settings
+from IPython.display import display
+pd.options.display.max_columns = None
+pd.options.display.max_rows = None
+pd.set_option('display.float_format', lambda x: '%.4f' % x)
+
+
+# 第二、三題的甘特圖
+def gantt_plot_2_3(x_opt, P, y_opt, problem_no, open_hour=0, open_min=0):
+    import datetime
+
+    I = len(x_opt)
+    S = len(x_opt[0])
+    M = len(y_opt[0][0])
+    schedule_df = pd.DataFrame()
+    open_time = datetime.datetime(2000, 1, 1, hour=open_hour, minute=open_min)
+    schedule_df['START_TIME'] = [(open_time + datetime.timedelta(hours=x_opt[i][s]) - datetime.timedelta(hours=P[i][s])) for i in range(I) for s in range(S)]
+    schedule_df['END_TIME'] = [(open_time + datetime.timedelta(hours=x_opt[i][s])) for i in range(I) for s in range(S)]
+
+    machine_ID = []
+    for i in range(I):
+        for s in range(S):
+            for m in range(M):
+                if y_opt[i][s][m] == 1:
+                    machine_ID.append(str(m + 1))
+    schedule_df['Machine_ID'] = machine_ID
+
+    schedule_df['Job_ID'] = [str(i + 1) for i in range(I) for s in range(S)]
+    color_list = ["#C0392B", "#EC7063", "#1F618D", "#34495E", "#3498DB", "#1E8449", "#28B463", "#F1C40F", "#F39C12", "#A6ACAF", "#7D3C98", "#9B59B6", "#2C3E50", "#EF553B", "#636EFA", "#BDC3C7", "#F39C12"]
+    fig = px.timeline(schedule_df, x_start="START_TIME", x_end="END_TIME", y="Machine_ID", color="Job_ID",
+                      color_discrete_sequence=color_list[0:I],
+                      category_orders={"Job_ID": [str(i+1) for i in range(I)], "Machine_ID": [str(m+1) for m in range(M)]},
+                      title="Instance " + str(1) + " Problem " + str(problem_no) + " Gantt Chart")
+    fig.update_xaxes(tickformat="%H:%M")
+    fig.update_layout(legend_title="Lot ID")
+    fig.show()
+    fig.write_image("Instance " + str(1) + " Problem " + str(problem_no) + ".pdf")
+
 def calculateIP(route):
 
 
@@ -189,6 +230,31 @@ def calculateIP(route):
     Q3_makespan.optimize()
 
     obj_val_makespan = Q3_makespan.objVal
+
+    #Print Gant
+    x_opt = {}
+    for i in orders:
+        x_opt[i] = {}
+        for s in stages:
+            x_opt[i][s] = {}
+
+    y_opt = {}
+    for i in orders:
+        y_opt[i] = {}
+        for s in stages:
+            y_opt[i][s] = {}
+            for m in machines:
+                y_opt[i][s][m] = {}
+
+    for var in Q3_makespan.getVars():
+        index = [i for i in var.varName[2:].split(',')]
+        if var.varName[0] == 'x':
+            x_opt[int(index[0])][int(index[1])] = var.x
+        elif var.varName[0] == 'y':
+            y_opt[int(index[0])][int(index[1])][int(index[2])] = var.x
+
+    gantt_plot_2_3(x_opt, P, y_opt, 3)
+
 
     return obj_val_delay, obj_val_makespan
 
