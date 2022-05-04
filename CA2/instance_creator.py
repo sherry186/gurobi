@@ -9,10 +9,12 @@ def instance_creator():
 
     # 根據 testCaseNo 隨機產生相對應變數
     jobID = list(range(0, testCaseNo+1))
-    dueTime = (np.random.rand(1, testCaseNo+1) * 24).flatten()
     stage1P = (np.random.rand(1, testCaseNo+1) * 10).flatten()
     stage2P = (np.random.rand(1, testCaseNo+1) * 10).flatten()
-
+    dueTime = []
+    for i in range(testCaseNo+1):
+      d = rand.uniform(stage1P[i] + stage2P[i], 24.0) 
+      dueTime.append(d)
 
     # 規定 Machine 數
     machineNo = rand.randrange(1, 21)
