@@ -158,5 +158,5 @@ def huristic_sylvey(fileName):
     gantt_plot_2_3(x, Plist, y, 3)
 
 
-huristic_sylvey("C:/Users/user/gurobi/CA2/tests/test1.csv")
+huristic_sylvey("C:/Users/user/gurobi/CA2/to_students/data/instance1.csv")
     

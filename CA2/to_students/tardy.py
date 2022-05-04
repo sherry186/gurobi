@@ -95,15 +95,21 @@ Input: p1i, p1j, p2i, p2j, P, MT, D
 Output: p1's slack time > p2's slack time?
 '''
 
-def compareSlackTime(p1i, p1j, p2i, p2j, P, M, D):
-    p1SlackTime = D[p1j] - (min(MT) + P[p1i, p1j])
-    p2SlackTime = D[p2j] - (min(MT) + P[p2i, p2j])
-    print(p1SlackTime)
-    print(p2SlackTime)
+def compareSlackTime(p1i, p1j, p2i, p2j, P, startTime1, startTime2, D):
+    p1SlackTime = D[p1j] - (startTime1 + P[p1i, p1j])
+    p2SlackTime = D[p2j] - (startTime2 + P[p2i, p2j])
+    # print(p1SlackTime)
+    # print(p2SlackTime)
 
     return p1SlackTime > p2SlackTime
 
+def equalSlackTime(p1i, p1j, p2i, p2j, P, startTime1, startTime2, D):
+    p1SlackTime = D[p1j] - (startTime1 + P[p1i, p1j])
+    p2SlackTime = D[p2j] - (startTime2 + P[p2i, p2j])
+    # print(p1SlackTime)
+    # print(p2SlackTime)
 
+    return p1SlackTime == p2SlackTime
 '''
 chooseMachineByProcessTime
 Input: MT
