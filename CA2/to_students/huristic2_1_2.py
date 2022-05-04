@@ -152,8 +152,8 @@ def huristic2_1_2(fileName):
     MT = [0 for i in range(0, max_amount)] # the amount of time Mi have processed
     Mdefault = [i for i in range(1, max_amount+1)]
 
-    print("MT", MT)
-    print("Mdefault:", Mdefault)
+    # print("MT", MT)
+    # print("Mdefault:", Mdefault)
 
     Scheduled = [] ## job j's next is which stage?
 
@@ -181,26 +181,26 @@ def huristic2_1_2(fileName):
 
         Scheduled.append(0)
 
-    print("P", P)
-    print("D", D)
-    print("M", M)
+    # print("P", P)
+    # print("D", D)
+    # print("M", M)
 
-    print(compareTardy(0, 9, 0, 1, P, D,0, 0, J, Scheduled))
-    print(compareMakeSpan(0, 9, 0, 1, P, len(MT), J))
+    # print(compareTardy(0, 9, 0, 1, P, D,0, 0, J, Scheduled))
+    # print(compareMakeSpan(0, 9, 0, 1, P, len(MT), J))
 
     ## -----------------------
 
     machinePriortylist = chooseMachineByProcessTime(MT)
-    print("machinePriortylist1", machinePriortylist)
+    # print("machinePriortylist1", machinePriortylist)
 
 
     ### huristic part
     resultList = {} ##(i, j)->[m, starttime, endtime]  list, Pij assigned to m on starttime// normal index
     while 0 in Scheduled or 1 in Scheduled:
         # print(chosenMachineInd, startTime)
-        print("Scheduled:", Scheduled)
+        # print("Scheduled:", Scheduled)
         machinePriortylist = chooseMachineByProcessTime(MT)
-        print("machine priority list:", machinePriortylist)
+        # print("machine priority list:", machinePriortylist)
         data = [] ### [i, j, startime] Pij, last process's startime
         priorityInd = 0
         chosenMachineInd, startTime = 0, 0
