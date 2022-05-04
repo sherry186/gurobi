@@ -16,7 +16,7 @@ def instance_creator():
 
     # 規定 Machine 數
     machineNo = rand.randrange(1, 21)
-    machines = list(range(0, machineNo+1))
+    machines = list(range(1, machineNo+1))
 
     # 產生 Machine lists
     stage1Machines = []
