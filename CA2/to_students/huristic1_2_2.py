@@ -8,6 +8,90 @@ print(serverIP)
 
 
 '''
+compare tardy amount
+Input: p1i, p1j, p2i, p2j, P, D, startTime, J, Scheduled
+Output: p1's tardy amount > p2'stardy amount ?
+'''
+def compareTardy(p1i, p1j, p2i, p2j, P, D, startTime1, startTime2, J, Scheduled):
+
+    ## counting p1
+    p1Count = 0
+    for j in range(J):
+        if j != p1j:
+            if Scheduled[j] == 0:
+                if startTime1 + P[p1i, p1j] + P[0, j] + P[1, j] - D[j] < 0:
+                    p1Count += 1
+            elif Scheduled[j] == 1:
+                if startTime1 + P[p1i, p1j]  + P[1, j] - D[j] < 0:
+                    p1Count += 1
+                
+    
+    ## counting p2
+    p2Count = 0
+    for j in range(J):
+        if j != p2j:
+            if Scheduled[j] == 0:
+                if startTime2 + P[p2i, p2j] + P[0, j] + P[1, j] - D[j] < 0:
+                    p2Count += 1
+            elif Scheduled[j] == 1:
+                if startTime2 + P[p2i, p2j]  + P[1, j] - D[j] < 0:
+                    p2Count += 1
+
+    # print(p1Count, p2Count)
+    
+    return p1Count > p2Count 
+
+def equalTardy(p1i, p1j, p2i, p2j, P, D, startTime1, startTime2, J, Scheduled):
+
+    ## counting p1
+    p1Count = 0
+    for j in range(J):
+        if j != p1j:
+            if Scheduled[j] == 0:
+                if startTime1 + P[p1i, p1j] + P[0, j] + P[1, j] - D[j] < 0:
+                    p1Count += 1
+            elif Scheduled[j] == 1:
+                if startTime1 + P[p1i, p1j]  + P[1, j] - D[j] < 0:
+                    p1Count += 1
+                
+    
+    ## counting p2
+    p2Count = 0
+    for j in range(J):
+        if j != p2j:
+            if Scheduled[j] == 0:
+                if startTime2 + P[p2i, p2j] + P[0, j] + P[1, j] - D[j] < 0:
+                    p2Count += 1
+            elif Scheduled[j] == 1:
+                if startTime2 + P[p2i, p2j]  + P[1, j] - D[j] < 0:
+                    p2Count += 1
+
+    # print(p1Count, p2Count)
+    
+    return p1Count == p2Count 
+
+
+'''
+compare make span
+Input: p1i, p1j, p2i, p2j, P, Machine amount, J
+Output: p1's makespan > p2's makespan?
+'''
+
+def compareMakeSpan(p1i, p1j, p2i, p2j, P, M, J):
+    sum = 0
+    for i in range(2):
+        for j in range(J):
+            sum += P[i, j]
+    
+    p1MakeSpan = P[p1i, p1j] + (sum - P[p1i, p1j])/(J*2-1)*((J*2)/M -1)
+    p2MakeSpan = P[p2i, p2j] + (sum - P[p2i, p2j])/(J*2-1)*((J*2)/M -1)
+    # print(p1MakeSpan)
+    # print(p2MakeSpan)
+
+    return p1MakeSpan > p2MakeSpan
+
+    
+'''
 compare slack time
 Input: p1i, p1j, p2i, p2j, P, MT, D
 Output: p1's slack time > p2's slack time?
@@ -61,8 +145,28 @@ def chooseMachineByProcessTime(MT):
     return returnList
 
 
+    
+
+'''
+chooseMachineByFormulation
+Input: pi, pj, MT, M, D
+Output: chosen machine index
+'''
+def chooseMachineByFormulation(pi, pj, MT, M, D):
+    chosenM = 0
+    minMT = 99999
+    for i in range(len(MT)):
+        if(D[pi, pj] - (MT[i] + P[pi, pj]) < minMT and i in M[pi, pj]):
+            minMT = D[pi, pj] - (MT[i] + P[pi, pj])
+            chosenM = i
+    
+    return chosenM
+
+
+
+# df = pd.read_csv("C:/Users/user/gurobi/CA2/to students/data/instance1.csv")
 ### def
-def huristic1_1_2(fileName):
+def huristic1_2_2(fileName):
     df = pd.read_csv(fileName)
     # df = pd.read_csv("C:/Users/user/gurobi/CA2/to students/data/instance1.csv")
     # print(df)
@@ -89,8 +193,8 @@ def huristic1_1_2(fileName):
     MT = [0 for i in range(0, max_amount)] # the amount of time Mi have processed
     Mdefault = [i for i in range(1, max_amount+1)]
 
-    print("MT", MT)
-    print("Mdefault:", Mdefault)
+    # print("MT", MT)
+    # print("Mdefault:", Mdefault)
 
     Scheduled = [] ## job j's next is which stage?
 
@@ -118,9 +222,9 @@ def huristic1_1_2(fileName):
 
         Scheduled.append(0)
 
-    print("P", P)
-    print("D", D)
-    print("M", M)
+    # print("P", P)
+    # print("D", D)
+    # print("M", M)
 
     # print(compareTardy(0, 9, 0, 1, P, D,0, 0, J, Scheduled))
     # print(compareMakeSpan(0, 9, 0, 1, P, len(MT), J))
@@ -128,7 +232,8 @@ def huristic1_1_2(fileName):
     ## -----------------------
 
     machinePriortylist = chooseMachineByProcessTime(MT)
-    print("machinePriortylist1", machinePriortylist)
+    # print("machinePriortylist1", machinePriortylist)
+
 
 
 
@@ -136,9 +241,9 @@ def huristic1_1_2(fileName):
     resultList = {} ##(i, j)->[m, starttime, endtime]  list, Pij assigned to m on starttime// normal index
     while 0 in Scheduled or 1 in Scheduled:
         # print(chosenMachineInd, startTime)
-        print("Scheduled:", Scheduled)
+        # print("Scheduled:", Scheduled)
         machinePriortylist = chooseMachineByProcessTime(MT)
-        print("machine priority list:", machinePriortylist)
+        # print("machine priority list:", machinePriortylist)
         data = [] ### [i, j, startime] Pij, last process's startime
         priorityInd = 0
         chosenMachineInd, startTime = 0, 0
@@ -153,15 +258,14 @@ def huristic1_1_2(fileName):
                         data.append([Scheduled[j], j, 0])
             priorityInd += 1    
 
-        print("data:", data)
-
+        # print("data:", data)
         # break
         if data != []:
             bestJob = data[0]
             for u in range(1, len(data)):
                 if compareSlackTime(bestJob[0], bestJob[1], data[u][0], data[u][1], P, max(startTime, bestJob[2]), max(startTime, data[u][2]), D):
                     bestJob = data[u]
-                elif equalSlackTime(bestJob[0], bestJob[1], data[u][0], data[u][1], P, max(startTime, bestJob[2]), max(startTime, data[u][2]), D) and compareProcessTime(bestJob[0], bestJob[1], data[u][0], data[u][1], P):
+                elif equalSlackTime(bestJob[0], bestJob[1], data[u][0], data[u][1], P, max(startTime, bestJob[2]), max(startTime, data[u][2]), D) and compareMakeSpan(bestJob[0], bestJob[1], data[u][0], data[u][1], P, len(MT), J):
                     bestJob = data[u]
 
 
@@ -169,7 +273,7 @@ def huristic1_1_2(fileName):
             Scheduled[bestJob[1]] += 1
             resultList[bestJob[0], bestJob[1]] = [chosenMachineInd, max(startTime, bestJob[2]), max(startTime, bestJob[2]) + P[bestJob[0],bestJob[1]]]
 
-    print("result list", resultList)
+    # print("result list", resultList)
 
     ## result
     tardyAmount = 0
@@ -188,11 +292,10 @@ def huristic1_1_2(fileName):
         if(completionTime > makespan):
             makespan = completionTime
 
-    print("makespan:", makespan)
-    print("tardy amount:", tardyAmount)
-    
-    return makespan, tardyAmount
+    # print("makespan:", makespan)
+    # print("tardy amount:", tardyAmount)
 
+    return makespan, tardyAmount
 
 
 

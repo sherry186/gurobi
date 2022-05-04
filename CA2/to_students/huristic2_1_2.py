@@ -215,9 +215,9 @@ def huristic2_1_2(fileName):
                         data.append([Scheduled[j], j, 0])
             priorityInd += 1    
 
-        print("data:", data)
+        # print("data:", data)
 
-        print(data)
+        # print(data)
         # break
         if data != []:
             bestJob = data[0]
@@ -234,7 +234,7 @@ def huristic2_1_2(fileName):
 
 
 
-    print("result list", resultList)
+    # print("result list", resultList)
 
     ## result
     tardyAmount = 0
@@ -253,8 +253,8 @@ def huristic2_1_2(fileName):
         if(completionTime > makespan):
             makespan = completionTime
 
-    print("makespan:", makespan)
-    print("tardy amount:", tardyAmount)
+    # print("makespan:", makespan)
+    # print("tardy amount:", tardyAmount)
 
     return makespan, tardyAmount
 
