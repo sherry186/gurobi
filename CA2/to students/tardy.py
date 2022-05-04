@@ -1,6 +1,7 @@
 import pandas as pd
 import os
 from dotenv import load_dotenv
+
 load_dotenv()
 
 serverIP = os.getenv("myPath")
@@ -204,6 +205,7 @@ print(compareMakeSpan(0, 9, 0, 1, P, len(MT), J))
 
 machinePriortylist = chooseMachineByProcessTime(MT)
 print("machinePriortylist1", machinePriortylist)
+
 
 
 
