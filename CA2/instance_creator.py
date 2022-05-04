@@ -31,6 +31,7 @@ def instance_creator():
       no_stage2 = np.random.binomial(1, rand.uniform(1/8, 1/4))
       if(no_stage2):
         stage2Machines.append('N/A')
+        stage2P[i] = 0
       else:
         machine_st1 = rand.sample(machines, rand.randrange(1, machineNo+1, 1))
         machine_st1.sort()
