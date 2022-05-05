@@ -1,13 +1,7 @@
 import pandas as pd
 import os
 import math
-from dotenv import load_dotenv
 from tardy import gantt_plot_2_3
-
-load_dotenv()
-
-serverIP = os.getenv("myPath")
-print(serverIP)
 
 '''
 compare tardy amount
@@ -149,7 +143,7 @@ def chooseMachineByFormulation(pi, pj, MT, M, D):
 ### def
 
 ### def
-def huristic2_2_2(fileName):
+def huristicPaper(fileName):
     df = pd.read_csv(fileName)
     # df = pd.read_csv("C:/Users/user/gurobi/CA2/to students/data/instance1.csv")
     # print(df)
@@ -289,10 +283,10 @@ def huristic2_2_2(fileName):
         if(completionTime > makespan):
             makespan = completionTime
     
-    print("makespan:", makespan)
-    print("tardy amount:", tardyAmount)
+    # print("makespan:", makespan)
+    # print("tardy amount:", tardyAmount)
 
-    print("fileName", fileName)
+    # print("fileName", fileName)
     x = []
     for j in range(J):
         temp = []
@@ -327,15 +321,15 @@ def huristic2_2_2(fileName):
     # gantt_plot_2_3(x, Plist, y, 3)
 
 
-    return makespan, tardyAmount 
+    return makespan, tardyAmount, resultList
 
 # ms, ta = huristic2_2_2("C:/Users/user/gurobi/CA2/data/instance 1.csv")
 # ms, ta = huristic2_2_2("C:/Users/user/gurobi/CA2/data/instance 1.csv")
 # ms, ta = huristic2_2_2("C:/Users/user/gurobi/CA2/data/instance 2.csv")
 # ms, ta = huristic2_2_2("C:/Users/user/gurobi/CA2/tests/test5.csv")
-for i in range(10):
-    pa = "C:/Users/user/gurobi/CA2/tests/test"+ str(i) + ".csv"
-    ms, ta = huristic2_2_2(pa)
+# for i in range(10):
+#     pa = "C:/Users/user/gurobi/CA2/tests/test"+ str(i) + ".csv"
+#     ms, ta = huristic2_2_2(pa)
 
 
 

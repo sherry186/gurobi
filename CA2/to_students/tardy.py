@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+import math
 
 
 # serverIP = os.getenv("myPath")
@@ -139,7 +140,19 @@ def compareProcessTime(p1i, p1j, p2i, p2j, P):
     
     return P[p1i, p1j] > P[p2i, p2j]
 
-    
+
+'''
+acts
+'''
+def compareACTs(p1i, p1j, p2i, p2j, D, P, startTime1, startTime2, K, P_bar):
+    # ACTS_APDi (priority_index)= exp(max(d_i - p_i - t, 0) / K_1*p_bar) * exp(-1/APDi) // 挑出一個 job_stage
+    # actP1 = 0
+    actP1 = math.exp(max(D[p1j] - P[p1i, p1j] - startTime1, 0)/K*P_bar) * math.exp(-1/(math.log(D[p1j])/(P[0,p1j] + P[1, p1j])))
+    actP2 = math.exp(max(D[p2j] - P[p2i, p2j] - startTime2, 0)/K*P_bar) * math.exp(-1/(math.log(D[p2j])/(P[0,p2j] + P[1, p2j])))
+
+
+    return actP1 > actP2
+
 
 ### def
 
