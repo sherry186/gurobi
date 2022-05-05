@@ -1,6 +1,5 @@
 import pandas as pd
 import os
-from dotenv import load_dotenv
 from tardy import gantt_plot_2_3
 from tardy import chooseMachineByProcessTime
 from tardy import compareTardy
@@ -101,7 +100,7 @@ def huristic_sylvey(fileName):
             Scheduled[bestJob[1]] += 1
             resultList[bestJob[0], bestJob[1]] = [chosenMachineInd, max(startTime, bestJob[2]), max(startTime, bestJob[2]) + P[bestJob[0],bestJob[1]]]
 
-    print(resultList)
+    print("resultList", resultList)
 
     # result evaluation
     tardyAmount = 0
@@ -139,7 +138,7 @@ def huristic_sylvey(fileName):
         for i in range(2):
             temp.append(P[i,j])
         Plist.append(temp)
-    print('Plist', Plist)
+    # print('Plist', Plist)
     
     y = []
     for j in range(J):
@@ -153,10 +152,10 @@ def huristic_sylvey(fileName):
                     tempi.append(0)
             tempj.append(tempi)
         y.append(tempj)
-    print('y', y)
+    # print('y', y)
     
     gantt_plot_2_3(x, Plist, y, 3)
 
 
-huristic_sylvey("C:/Users/user/gurobi/CA2/to_students/data/instance1.csv")
+huristic_sylvey("./to_students/data/instance 2.csv")
     
