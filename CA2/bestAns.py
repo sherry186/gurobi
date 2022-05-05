@@ -258,7 +258,8 @@ def calculateIP(route):
 
     return obj_val_delay, obj_val_makespan
 
-fileName = "tests/test0.csv"
+# fileName = "C:/Users/user/gurobi/CA2/tests/test0.csv"
+fileName = "C:/Users/user/gurobi/CA2/data/instance 2.csv"
 delay, makespan = calculateIP(fileName)
 
 print("Delay Job = ", delay)

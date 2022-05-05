@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+import math
 from dotenv import load_dotenv
 from tardy import gantt_plot_2_3
 
@@ -71,6 +72,21 @@ def equalTardy(p1i, p1j, p2i, p2j, P, D, startTime1, startTime2, J, Scheduled):
     
     return p1Count == p2Count 
 
+
+'''
+acts
+'''
+def compareACTs(p1i, p1j, p2i, p2j, D, P, startTime1, startTime2, K, P_bar):
+    # ACTS_APDi (priority_index)= exp(max(d_i - p_i - t, 0) / K_1*p_bar) * exp(-1/APDi) // 挑出一個 job_stage
+    # actP1 = 0
+    actP1 = math.exp(max(D[p1j] - P[p1i, p1j] - startTime1, 0)/K*P_bar) * math.exp(-1/(math.log(D[p1j])/(P[0,p1j] + P[1, p1j])))
+    actP2 = math.exp(max(D[p2j] - P[p2i, p2j] - startTime2, 0)/K*P_bar) * math.exp(-1/(math.log(D[p2j])/(P[0,p2j] + P[1, p2j])))
+
+
+    return actP1 > actP2
+
+
+
 '''
 compare make span
 Input: p1i, p1j, p2i, p2j, P, Machine amount, J
@@ -139,6 +155,7 @@ def huristic2_2_2(fileName):
     # print(df)
     # print(df['Due Time'].size)
 
+    
     max_amount = 0
     for index, row in df.iterrows():
         x1 = row['Stage-1 Machines'].split(',')
@@ -168,10 +185,11 @@ def huristic2_2_2(fileName):
     P = {} #Pij
     D = {} #Dj
     M = {} #Pij can do on Mlist ##normal index
-
+    P_bar = 0
     for j in range(J):
         P[0,j] = df['Stage-1 Processing Time'][j]
         P[1,j] = df['Stage-2 Processing Time'][j]
+        P_bar += (df['Stage-1 Processing Time'][j] + df['Stage-2 Processing Time'][j])
         D[j] = df['Due Time'][j]
         s1 = str(df['Stage-1 Machines'][j])
         s2 = str(df['Stage-2 Machines'][j])
@@ -189,6 +207,10 @@ def huristic2_2_2(fileName):
 
         Scheduled.append(0)
 
+    P_bar = P_bar/(J*2)
+
+    R = 0.4 #hyper...
+    K = math.log(J/max_amount)*1.2 - R ## some constant from paper
     # print("P", P)
     # print("D", D)
     # print("M", M)
@@ -235,15 +257,13 @@ def huristic2_2_2(fileName):
                         data.append([Scheduled[j], j, 0])
             priorityInd += 1    
 
-        # print("data:", data)
-        # break
         if data != []:
             bestJob = data[0]
             for u in range(1, len(data)):
-                if compareTardy(bestJob[0], bestJob[1], data[u][0], data[u][1], P, D, max(startTime, bestJob[2]), max(startTime, data[u][2]), J, Scheduled):
+                if compareACTs(bestJob[0], bestJob[1], data[u][0], data[u][1], D, P, max(startTime, bestJob[2]), max(startTime, data[u][2]), K, P_bar):
                     bestJob = data[u]
-                elif equalTardy(bestJob[0], bestJob[1], data[u][0], data[u][1], P, D, max(startTime, bestJob[2]), max(startTime, data[u][2]), J, Scheduled) and compareMakeSpan(bestJob[0], bestJob[1], data[u][0], data[u][1], P, len(MT), J):
-                    bestJob = data[u]
+                # if compareACTs(bestJob[0], bestJob[1], data[u][0], data[u][1], P, D, max(startTime, bestJob[2]), max(startTime, data[u][2]), J, Scheduled):
+
 
 
             MT[chosenMachineInd] = max(startTime, bestJob[2]) + P[bestJob[0],bestJob[1]]
@@ -252,40 +272,6 @@ def huristic2_2_2(fileName):
 
 
     # print("result list", resultList)
-    print("fileName", fileName)
-    x = []
-    for j in range(J):
-        temp = []
-        for i in range(2):
-            temp.append(resultList[i, j][2])
-        x.append(temp)
-
-    print('x', x)
-
-    Plist = []
-    for j in range(J):
-        temp = []
-        for i in range(2):
-            temp.append(P[i,j])
-        Plist.append(temp)
-    print('Plist', Plist)
-    
-    y = []
-    for j in range(J):
-        tempj = []
-        for i in range(2):
-            tempi = []
-            for m in range(max_amount):
-                if(resultList[i,j][0] == m):
-                    tempi.append(1)
-                else:
-                    tempi.append(0)
-            tempj.append(tempi)
-        y.append(tempj)
-    print('y', y)
-    
-    gantt_plot_2_3(x, Plist, y, 3)
-
     ## result
     tardyAmount = 0
     makespan = 0
@@ -302,13 +288,59 @@ def huristic2_2_2(fileName):
 
         if(completionTime > makespan):
             makespan = completionTime
+    
+    print("makespan:", makespan)
+    print("tardy amount:", tardyAmount)
 
-    # print("makespan:", makespan)
-    # print("tardy amount:", tardyAmount)
+    print("fileName", fileName)
+    x = []
+    for j in range(J):
+        temp = []
+        for i in range(2):
+            temp.append(resultList[i, j][2])
+        x.append(temp)
+
+    # print('x', x)
+
+    Plist = []
+    for j in range(J):
+        temp = []
+        for i in range(2):
+            temp.append(P[i,j])
+        Plist.append(temp)
+    # print('Plist', Plist)
+    
+    y = []
+    for j in range(J):
+        tempj = []
+        for i in range(2):
+            tempi = []
+            for m in range(max_amount):
+                if(resultList[i,j][0] == m):
+                    tempi.append(1)
+                else:
+                    tempi.append(0)
+            tempj.append(tempi)
+        y.append(tempj)
+    # print('y', y)
+    
+    # gantt_plot_2_3(x, Plist, y, 3)
+
 
     return makespan, tardyAmount 
 
+# ms, ta = huristic2_2_2("C:/Users/user/gurobi/CA2/data/instance 1.csv")
+# ms, ta = huristic2_2_2("C:/Users/user/gurobi/CA2/data/instance 1.csv")
+# ms, ta = huristic2_2_2("C:/Users/user/gurobi/CA2/data/instance 2.csv")
+# ms, ta = huristic2_2_2("C:/Users/user/gurobi/CA2/tests/test5.csv")
+for i in range(10):
+    pa = "C:/Users/user/gurobi/CA2/tests/test"+ str(i) + ".csv"
+    ms, ta = huristic2_2_2(pa)
 
 
-ms, ta = huristic2_2_2("C:/Users/user/gurobi/CA2/data/instance 2.csv")
+
+
+
+
+
 

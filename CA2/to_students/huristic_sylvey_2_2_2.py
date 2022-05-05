@@ -100,7 +100,7 @@ def huristic_sylvey(fileName):
             Scheduled[bestJob[1]] += 1
             resultList[bestJob[0], bestJob[1]] = [chosenMachineInd, max(startTime, bestJob[2]), max(startTime, bestJob[2]) + P[bestJob[0],bestJob[1]]]
 
-    print("resultList", resultList)
+    # print("resultList", resultList)
 
     # result evaluation
     tardyAmount = 0
@@ -130,7 +130,7 @@ def huristic_sylvey(fileName):
             temp.append(resultList[i, j][2])
         x.append(temp)
 
-    print('x', x)
+    # print('x', x)
 
     Plist = []
     for j in range(J):
@@ -154,8 +154,13 @@ def huristic_sylvey(fileName):
         y.append(tempj)
     # print('y', y)
     
-    gantt_plot_2_3(x, Plist, y, 3)
+    # gantt_plot_2_3(x, Plist, y, 3)
+    return makespan, tardyAmount
 
 
-huristic_sylvey("./to_students/data/instance 2.csv")
+for i in range(10):
+    pa = "C:/Users/user/gurobi/CA2/tests/test"+ str(i) + ".csv"
+    print(pa)
+    ms, ta = huristic_sylvey(pa)
+
     
