@@ -333,7 +333,7 @@ def huristicPaper(fileName):
     return makespan, tardyAmount, resultList
 
 # ms, ta = huristic2_2_2("C:/Users/user/gurobi/CA2/data/instance 1.csv")
-# ms, ta = huristicPaper("C:/Users/user/gurobi/CA2/data/instance 2.csv")
+ms, ta = huristicPaper("C:/Users/user/gurobi/CA2/data/instance 2.csv")
 
 # ms, ta = huristic2_2_2("C:/Users/user/gurobi/CA2/data/instance 2.csv")
 # ms, ta = huristic2_2_2("C:/Users/user/gurobi/CA2/tests/test5.csv")

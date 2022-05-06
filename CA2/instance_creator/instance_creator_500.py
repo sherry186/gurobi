@@ -3,12 +3,12 @@ import numpy as np
 import random as rand
 
 def instance_creator():
-  for testnum in range(10):
+  for testnum in range(500):
     # 隨機產生 testCase 數量
-    testCaseNo = rand.randrange(1, 100)
+    testCaseNo = rand.randrange(500, 998) # jobNo
 
     # 根據 testCaseNo 隨機產生相對應變數
-    jobID = list(range(0, testCaseNo+1))
+    jobID = list(range(1, testCaseNo+2))
     stage1P = (np.random.rand(1, testCaseNo+1) * 10).flatten()
     stage2P = (np.random.rand(1, testCaseNo+1) * 10).flatten()
     dueTime = []
@@ -17,7 +17,7 @@ def instance_creator():
       dueTime.append(d)
 
     # 規定 Machine 數
-    machineNo = rand.randrange(1, 21)
+    machineNo = rand.randrange(1, 20)
     machines = list(range(1, machineNo+1))
 
     # 產生 Machine lists
@@ -50,7 +50,7 @@ def instance_creator():
 
     df = pd.DataFrame(data=d, index=jobID)
     testName = 'test' + str(testnum)
-    df.to_csv('./tests/' + testName + '.csv')
+    df.to_csv('./500tests/' + testName + '.csv')
 
 instance_creator()
 
