@@ -8,7 +8,7 @@ def instance_creator():
     testCaseNo = rand.randrange(10, 20)
 
     # 根據 testCaseNo 隨機產生相對應變數
-    jobID = list(range(0, testCaseNo+1))
+    jobID = list(range(1, testCaseNo+2))
     stage1P = (np.random.rand(1, testCaseNo+1) * 10).flatten()
     stage2P = (np.random.rand(1, testCaseNo+1) * 10).flatten()
     dueTime = []
