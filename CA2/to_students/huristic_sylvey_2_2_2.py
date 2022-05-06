@@ -119,8 +119,8 @@ def huristic_sylvey(fileName):
         if(completionTime > makespan):
             makespan = completionTime
 
-    print("makespan:", makespan)
-    print("tardy amount:", tardyAmount)
+    # print("makespan:", makespan)
+    # print("tardy amount:", tardyAmount)
 
     ##plot 
     x = []
@@ -158,9 +158,9 @@ def huristic_sylvey(fileName):
     return makespan, tardyAmount
 
 
-for i in range(10):
-    pa = "C:/Users/user/gurobi/CA2/tests/test"+ str(i) + ".csv"
-    print(pa)
-    ms, ta = huristic_sylvey(pa)
+# for i in range(10):
+#     pa = "C:/Users/user/gurobi/CA2/tests/test"+ str(i) + ".csv"
+#     print(pa)
+#     ms, ta = huristic_sylvey(pa)
 
     
