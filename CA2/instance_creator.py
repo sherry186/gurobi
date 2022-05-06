@@ -5,7 +5,7 @@ import random as rand
 def instance_creator():
   for testnum in range(10):
     # 隨機產生 testCase 數量
-    testCaseNo = rand.randrange(1, 100)
+    testCaseNo = rand.randrange(10, 20)
 
     # 根據 testCaseNo 隨機產生相對應變數
     jobID = list(range(0, testCaseNo+1))
@@ -17,7 +17,7 @@ def instance_creator():
       dueTime.append(d)
 
     # 規定 Machine 數
-    machineNo = rand.randrange(1, 21)
+    machineNo = rand.randrange(1, 20)
     machines = list(range(1, machineNo+1))
 
     # 產生 Machine lists

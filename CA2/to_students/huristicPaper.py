@@ -239,7 +239,8 @@ def huristicPaper(fileName):
         # print("machine priority list:", machinePriortylist)
         data = [] ### [i, j, startime] Pij, last process's startime 選的machine可以做的process
         priorityInd = 0 
-        chosenMachineInd, startTime = 0, 0 # 
+        chosenMachineInd, startTime =  machinePriortylist[priorityInd][0], machinePriortylist[priorityInd][1] # 
+        # print('chosenMachine before data: ', chosenMachineInd, '\n')   
         while(len(data) == 0):
             chosenMachineInd, startTime = machinePriortylist[priorityInd][0], machinePriortylist[priorityInd][1]
             for j in range(len(Scheduled)):
@@ -249,20 +250,28 @@ def huristicPaper(fileName):
                         data.append([Scheduled[j], j, resultList[0, j][2]])
                     else:
                         data.append([Scheduled[j], j, 0])
-            priorityInd += 1    
+            priorityInd += 1 
+            # print('chosenMachine: ', chosenMachineInd)  
+            # print('data:', data) 
+            
+ 
 
-        if data != []:
-            bestJob = data[0]
-            for u in range(1, len(data)):
-                if compareACTs(bestJob[0], bestJob[1], data[u][0], data[u][1], D, P, max(startTime, bestJob[2]), max(startTime, data[u][2]), K, P_bar):
-                    bestJob = data[u]
-                # if compareACTs(bestJob[0], bestJob[1], data[u][0], data[u][1], P, D, max(startTime, bestJob[2]), max(startTime, data[u][2]), J, Scheduled):
-
-
-
+        # if data != []:
+        bestJob = data[0]
+        for u in range(1, len(data)):
+            if compareACTs(bestJob[0], bestJob[1], data[u][0], data[u][1], D, P, max(startTime, bestJob[2]), max(startTime, data[u][2]), K, P_bar):
+                bestJob = data[u]
+            # if compareACTs(bestJob[0], bestJob[1], data[u][0], data[u][1], P, D, max(startTime, bestJob[2]), max(startTime, data[u][2]), J, Scheduled):
+        
+        if(P[bestJob[0], bestJob[1]]):
             MT[chosenMachineInd] = max(startTime, bestJob[2]) + P[bestJob[0],bestJob[1]]
-            Scheduled[bestJob[1]] += 1
-            resultList[bestJob[0], bestJob[1]] = [chosenMachineInd, max(startTime, bestJob[2]), max(startTime, bestJob[2]) + P[bestJob[0],bestJob[1]]]
+            
+        resultList[bestJob[0], bestJob[1]] = [chosenMachineInd, max(startTime, bestJob[2]), max(startTime, bestJob[2]) + P[bestJob[0],bestJob[1]]]
+        Scheduled[bestJob[1]] += 1
+        
+        
+        # print(bestJob)
+        # print('\n', '=================================', '\n') 
 
 
     # print("result list", resultList)
@@ -324,7 +333,8 @@ def huristicPaper(fileName):
     return makespan, tardyAmount, resultList
 
 # ms, ta = huristic2_2_2("C:/Users/user/gurobi/CA2/data/instance 1.csv")
-# ms, ta = huristic2_2_2("C:/Users/user/gurobi/CA2/data/instance 1.csv")
+# ms, ta = huristicPaper("C:/Users/user/gurobi/CA2/data/instance 2.csv")
+
 # ms, ta = huristic2_2_2("C:/Users/user/gurobi/CA2/data/instance 2.csv")
 # ms, ta = huristic2_2_2("C:/Users/user/gurobi/CA2/tests/test5.csv")
 # for i in range(10):
