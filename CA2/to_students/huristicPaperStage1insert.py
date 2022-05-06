@@ -143,7 +143,7 @@ def chooseMachineByFormulation(pi, pj, MT, M, D):
 ### def
 
 ### def
-def huristicPaperStage1First(fileName):
+def huristicPaperStage1Insert(fileName):
     df = pd.read_csv(fileName)
     # df = pd.read_csv("C:/Users/user/gurobi/CA2/to students/data/instance1.csv")
     # print(df)
@@ -215,56 +215,30 @@ def huristicPaperStage1First(fileName):
     ## -----------------------
 
     machinePriortylist = chooseMachineByProcessTime(MT)
-    
+    # print("machinePriortylist1", machinePriortylist)
 
-    # stage1 first
-    resultList = {}
-    while 0 in MT:
-        # print(chosenMachineInd, startTime)
-        # print("Scheduled:", Scheduled)
-        machinePriortylist = chooseMachineByProcessTime(MT) #[(machine, MT), (machine ,Mt)......]
-        # print("machine priority list:", machinePriortylist)
-        data = [] ### [i, j, startime] Pij, last process's startime 選的machine可以做的process
-        priorityInd = 0 
-        chosenMachineInd, startTime =  machinePriortylist[priorityInd][0], machinePriortylist[priorityInd][1] # 
-        # print('chosenMachine before data: ', chosenMachineInd, '\n')   
-        while(len(data) == 0):
-            chosenMachineInd, startTime = machinePriortylist[priorityInd][0], machinePriortylist[priorityInd][1]
-            for j in range(len(Scheduled)):
-                if Scheduled[j] != 2 and chosenMachineInd+1 in M[Scheduled[j], j]:
-                    if Scheduled[j] == 0:
-                        data.append([Scheduled[j], j, 0])
-            priorityInd += 1 
-            # print('chosenMachine: ', chosenMachineInd)  
-            # print('data:', data) 
-            
- 
+    # print("P", P)
+    # print("D", D)
+    # print("M", M)
 
-        # if data != []:
-        bestJob = data[0]
-        for u in range(1, len(data)):
-            if compareACTs(bestJob[0], bestJob[1], data[u][0], data[u][1], D, P, max(startTime, bestJob[2]), max(startTime, data[u][2]), K, P_bar):
-                bestJob = data[u]
-            # if compareACTs(bestJob[0], bestJob[1], data[u][0], data[u][1], P, D, max(startTime, bestJob[2]), max(startTime, data[u][2]), J, Scheduled):
-        
-        if(P[bestJob[0], bestJob[1]]):
-            MT[chosenMachineInd] = max(startTime, bestJob[2]) + P[bestJob[0],bestJob[1]]
-            
-        resultList[bestJob[0], bestJob[1]] = [chosenMachineInd, max(startTime, bestJob[2]), max(startTime, bestJob[2]) + P[bestJob[0],bestJob[1]]]
-        Scheduled[bestJob[1]] += 1
-      
+    # print(compareTardy(0, 9, 0, 1, P, D,0, J, Scheduled))
+    # print(compareMakeSpan(0, 9, 0, 1, P, len(MT), J))
+    # print(chooseMachineByProcessTime(0, 3, MT, M))
 
-    # stage 2
-    #  ##(i, j)->[m, starttime, endtime]  list, Pij assigned to m on starttime// normal index
+    ### -----------------------
+
+    # machinePriortylist = chooseMachineByProcessTime(MT)
+    # print(machinePriortylist)
+
+    ### huristic part
+    resultList = {} ##(i, j)->[m, starttime, endtime]  list, Pij assigned to m on starttime// normal index
     while 0 in Scheduled or 1 in Scheduled:
-        # print(chosenMachineInd, startTime)
-        # print("Scheduled:", Scheduled)
-        machinePriortylist = chooseMachineByProcessTime(MT) #[(machine, MT), (machine ,Mt)......]
-        # print("machine priority list:", machinePriortylist)
+
+        machinePriortylist = chooseMachineByProcessTime(MT) 
         data = [] ### [i, j, startime] Pij, last process's startime 選的machine可以做的process
         priorityInd = 0 
         chosenMachineInd, startTime =  machinePriortylist[priorityInd][0], machinePriortylist[priorityInd][1] # 
-        # print('chosenMachine before data: ', chosenMachineInd, '\n')   
+
         while(len(data) == 0):
             chosenMachineInd, startTime = machinePriortylist[priorityInd][0], machinePriortylist[priorityInd][1]
             for j in range(len(Scheduled)):
@@ -275,12 +249,7 @@ def huristicPaperStage1First(fileName):
                     else:
                         data.append([Scheduled[j], j, 0])
             priorityInd += 1 
-            # print('chosenMachine: ', chosenMachineInd)  
-            # print('data:', data) 
             
- 
-
-        # if data != []:
         bestJob = data[0]
         for u in range(1, len(data)):
             if compareACTs(bestJob[0], bestJob[1], data[u][0], data[u][1], D, P, max(startTime, bestJob[2]), max(startTime, data[u][2]), K, P_bar):
@@ -292,6 +261,22 @@ def huristicPaperStage1First(fileName):
             
         resultList[bestJob[0], bestJob[1]] = [chosenMachineInd, max(startTime, bestJob[2]), max(startTime, bestJob[2]) + P[bestJob[0],bestJob[1]]]
         Scheduled[bestJob[1]] += 1
+
+        if(bestJob[0] == 1 and max(startTime, bestJob[2]) == bestJob[2]): ## 挑的是stage2，而且前面有一段空檔
+            for job in data:
+                if job != bestJob and job[0] == 0: ## 找一個能做的stage1
+                    if not P[bestJob[0], bestJob[1]]: ## 如果那個stage2 本身沒有東西(p為0)
+                        MT[chosenMachineInd] = max(startTime, bestJob[2]) + P[bestJob[0],bestJob[1]]
+                        resultList[job[0], job[1]] = [chosenMachineInd, max(startTime, job[2]), max(startTime, job[2]) + P[job[0], job[1]]]
+                        Scheduled[job[1]] += 1
+                        break
+                    else: ## 如果stage2本身有東西
+                        if(P[job[0],job[1]] <= bestJob[2] - startTime): ## 先該job檢查能不能塞
+                            resultList[job[0], job[1]] = [chosenMachineInd, max(startTime, job[2]), max(startTime, job[2]) + P[job[0], job[1]]]
+                            Scheduled[job[1]] += 1
+                            break
+                    
+
         
         
         # print(bestJob)
@@ -357,9 +342,8 @@ def huristicPaperStage1First(fileName):
     return makespan, tardyAmount
 
 # ms, ta = huristic2_2_2("C:/Users/user/gurobi/CA2/data/instance 1.csv")
-ms, ta = huristicPaperStage1First("C:/Users/user/gurobi/CA2/data/instance 2.csv")
-# print(ms, ta)
-
+ms, ta = huristicPaperStage1Insert("C:/Users/user/gurobi/CA2/data/instance 2.csv")
+print(ms, ta)
 # ms, ta = huristic2_2_2("C:/Users/user/gurobi/CA2/data/instance 2.csv")
 # ms, ta = huristic2_2_2("C:/Users/user/gurobi/CA2/tests/test5.csv")
 # for i in range(10):
