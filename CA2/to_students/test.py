@@ -6,7 +6,7 @@ subfileName = ".csv"
 
 
 tardyamount2_2_2 = 0
-for i in range(1, 10):
+for i in range(0, 10):
     path = root+ str(i) + subfileName
     print ('path:', path)
     makespan, tardyamount, resultList = huristicPaper(path)
