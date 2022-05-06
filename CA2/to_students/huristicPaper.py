@@ -318,7 +318,7 @@ def huristicPaper(fileName):
         y.append(tempj)
     # print('y', y)
     
-    # gantt_plot_2_3(x, Plist, y, 3)
+    gantt_plot_2_3(x, Plist, y, 3)
 
 
     return makespan, tardyAmount, resultList
