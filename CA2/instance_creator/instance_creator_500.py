@@ -26,6 +26,8 @@ def instance_creator():
       machine_st1 = rand.sample(machines, rand.randrange(1, machineNo+1, 1))
       machine_st1.sort()
       machine_st1_string = ','.join(str(e) for e in machine_st1)
+      if(isinstance(machine_st1_string, str) == False):
+        machine_st1_string = str(machine_st1_string)
       stage1Machines.append(machine_st1_string)
 
     stage2Machines = []
@@ -38,6 +40,8 @@ def instance_creator():
         machine_st1 = rand.sample(machines, rand.randrange(1, machineNo+1, 1))
         machine_st1.sort()
         machine_st1_string = ','.join(str(e) for e in machine_st1)
+        if(isinstance(machine_st1_string, str) == False):
+          machine_st1_string = str(machine_st1_string)
         stage2Machines.append(machine_st1_string)
         
     d = {'Job ID': jobID,
@@ -50,7 +54,7 @@ def instance_creator():
 
     df = pd.DataFrame(data=d, index=jobID)
     testName = 'test' + str(testnum)
-    df.to_csv('./500tests/' + testName + '.csv')
+    # df.to_csv('./500tests/' + testName + '.csv')
 
 instance_creator()
 
