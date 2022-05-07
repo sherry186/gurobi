@@ -330,7 +330,7 @@ def huristicPaper(fileName):
     # gantt_plot_2_3(x, Plist, y, 3)
 
 
-    return makespan, tardyAmount
+    return makespan, tardyAmount, resultList
 
 # ms, ta = huristic2_2_2("C:/Users/user/gurobi/CA2/data/instance 1.csv")
 # ms, ta = huristicPaper("C:/Users/user/gurobi/CA2/data/instance 2.csv")
