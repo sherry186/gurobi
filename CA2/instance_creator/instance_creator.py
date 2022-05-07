@@ -2,10 +2,20 @@ import pandas as pd
 import numpy as np
 import random as rand
 
+# job 數
+
+# machine 數
+
+# stage1 stage2 prcoess time
+
+# due time
+
+# 是否有 stage 2
+
 
 def instance_creator():
     for testnum in range(30):
-        # 隨機產生 testCase 數量
+        # 隨機產生 job 數量
         testCaseNo = rand.randrange(10, 30)
 
         # 根據 testCaseNo 隨機產生相對應變數
