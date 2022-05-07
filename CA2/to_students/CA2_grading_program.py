@@ -13,7 +13,7 @@ from algorithm_module import heuristic_algorithm
 if __name__ == '__main__':
     
     # read all instances (xlsx file) under data folder
-    all_data_list = os.listdir('data')
+    all_data_list = os.listdir('C:/Users/user/gurobi/CA2/data/')
     
     # evaluate all instances 
     result_df = pd.DataFrame(columns = ['Data name', 'Time', 'Number of tardy job', 'Makespan', 'Feasibility'])
@@ -30,7 +30,7 @@ if __name__ == '__main__':
             2. You need to return two lists "machine" and "completion_time".
             '''
             file_path = 'data/' + file_name
-            machine, completion_time = heuristic_algorithm(file_path)
+            machine, completion_time = heuristic_algorithm('C:/Users/user/gurobi/CA2/data/instance1.csv')
             
         except:
             print("the algorithm has errors")

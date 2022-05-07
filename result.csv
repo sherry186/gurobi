@@ -1,0 +1,6 @@
+Data name,Time,Number of tardy job,Makespan,Feasibility
+instance1.csv,0.006983518600463867,,,False
+instance2.csv,0.009000062942504883,,,False
+instance3.csv,0.012978792190551758,,,False
+instance4.csv,0.0050051212310791016,,,False
+instance5.csv,0.0047149658203125,,,False
