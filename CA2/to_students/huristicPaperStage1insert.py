@@ -342,8 +342,8 @@ def huristicPaperStage1Insert(fileName):
     return makespan, tardyAmount
 
 # ms, ta = huristic2_2_2("C:/Users/user/gurobi/CA2/data/instance 1.csv")
-ms, ta = huristicPaperStage1Insert("C:/Users/user/gurobi/CA2/data/instance 2.csv")
-print(ms, ta)
+# ms, ta = huristicPaperStage1Insert("C:/Users/user/gurobi/CA2/data/instance 2.csv")
+# print(ms, ta)
 # ms, ta = huristic2_2_2("C:/Users/user/gurobi/CA2/data/instance 2.csv")
 # ms, ta = huristic2_2_2("C:/Users/user/gurobi/CA2/tests/test5.csv")
 # for i in range(10):

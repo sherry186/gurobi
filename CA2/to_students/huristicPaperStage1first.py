@@ -357,7 +357,7 @@ def huristicPaperStage1First(fileName):
     return makespan, tardyAmount
 
 # ms, ta = huristic2_2_2("C:/Users/user/gurobi/CA2/data/instance 1.csv")
-ms, ta = huristicPaperStage1First("C:/Users/user/gurobi/CA2/data/instance 2.csv")
+# ms, ta = huristicPaperStage1First("C:/Users/user/gurobi/CA2/data/instance 2.csv")
 # print(ms, ta)
 
 # ms, ta = huristic2_2_2("C:/Users/user/gurobi/CA2/data/instance 2.csv")

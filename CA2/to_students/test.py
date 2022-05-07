@@ -8,7 +8,7 @@ from huristicPaperStage1insertFix import huristicPaperStage1InsertFix
 import csv
 
 
-root = 'C:/Users/user/gurobi/CA2/500tests/test'
+root = 'C:/Users/user/gurobi/CA2/data/instance'
 subfileName = ".csv"
 
 
@@ -98,7 +98,7 @@ subfileName = ".csv"
 #       writer.writerow([path, tardyamount, makespan])
      
     
-with open('huristicPaperStageInsertFix.csv', 'w', newline='') as csvfile:
+with open('huristicPaperStageInsertFixInstance.csv', 'w', newline='') as csvfile:
   # 建立 CSV 檔寫入器
   writer = csv.writer(csvfile)
 
@@ -106,8 +106,8 @@ with open('huristicPaperStageInsertFix.csv', 'w', newline='') as csvfile:
   writer.writerow(['path', 'tardy', 'makespan'])
 
   tardyamount2_2_2 = 0
-  for i in range(0, 500):
-      path = root+ str(i) + subfileName
+  for i in range(1, 6):
+      path = root + str(i) + subfileName
       makespan, tardyamount = 0, 0
       print(path)
       try:
