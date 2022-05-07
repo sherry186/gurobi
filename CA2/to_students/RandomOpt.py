@@ -1,4 +1,5 @@
 import copy
+from unittest import result
 from huristicPaper import huristicPaper
 from random import shuffle
 import pandas as pd
@@ -21,7 +22,7 @@ def RandomOpt(makespan, tardyAmount, resultList, dueList):
 
             # 從第一個元素開始看當前i的start time 是否大於他的end time
             totalLen = len(newStruct[resultList[i][0]]["jobList"])
-            for j in range(totalLen-1,-1,-1):
+            for j in range(totalLen-1,-1):
                 curKey = newStruct[resultList[i][0]]["jobList"][j]
                 if(resultList[curKey][2] <= resultList[i][1]):
                     newStruct[resultList[i][0]]["jobList"].insert(j+1, i)
@@ -39,6 +40,7 @@ def RandomOpt(makespan, tardyAmount, resultList, dueList):
 
     #####################################################################
 
+    # 找最大 makespan 的機器
     max_makespan = -99999
     max_makespan_machine = -1
     min_makespan = 99999
@@ -57,11 +59,30 @@ def RandomOpt(makespan, tardyAmount, resultList, dueList):
     insert_job_list = copy.deepcopy(newStruct[max_makespan_machine]["jobList"])
     shuffle(insert_job_list)
 
-    original_index = newStruct[max_makespan_machine]["jobList"].index(insert_job_list)
+    
 
     insert_job = insert_job_list[0]
     for i in range(len(insert_job_list)):
         if(hasTried[insert_job_list[i]] == False):
+            # check remove insert job 後，後面的任務會不會變成非法的
+            original_index = newStruct[max_makespan_machine]["jobList"].index(insert_job_list)
+            original_processing_time = resultList[insert_job_list][2] - resultList[insert_job_list][1]
+
+            valid = True
+            for k in range(original_index+1, len(newStruct[max_makespan_machine]["jobList"])):
+                # 檢查要移動的job能不能在目標machine上執行
+                # if():
+
+                # cur_stage_job = newStruct[max_makespan_machine]["jobList"][k]
+                # 如果是同一台machine呢
+                if(cur_stage_job.first == 1 and resultList[cur_stage_job][2]-original_processing_time < resultList[(0, cur_stage_job.second)][1]):
+                    valid = False
+                    break
+            if(valid == False):
+                continue
+
+
+
             hasTried[insert_job_list[i]] = True
             insert_job = insert_job_list[i]
             break
@@ -70,6 +91,7 @@ def RandomOpt(makespan, tardyAmount, resultList, dueList):
     insert_job_protime = resultList[insert_job][2] - resultList[insert_job][1]
 
     # tbd: check remove insert job 後，後面的任務會不會變成非法的
+
 
     ### 試試看所有min. makespan 的機器上可插入的位置，看更新後的makespan有沒有小於目前的最佳值
     #### 可插入＝要插入位置前一個job（J_e）的end time + stage 1 process time < stage 2 start time
@@ -118,6 +140,11 @@ def RandomOpt(makespan, tardyAmount, resultList, dueList):
             if(temp_max_makespan < opt_makespan):
                 opt_makespan = temp_max_makespan
             break
+
+        # 若沒有不需更動的空隙，從最後開始插入
+        # 檢查欲插入位置後的工作會不會因此不合法
+        # 插入並移動後續工作
+
     
     
     
