@@ -240,13 +240,21 @@ def heuristic_algorithm(file_path):
         Scheduled[bestJob[1]] += 1
 
         if(bestJob[0] == 1 and max(startTime, bestJob[2]) == bestJob[2]): ## 挑的是stage2，而且前面有一段空檔
-            for job in data:
-                if job != bestJob and job[0] == 0: ## 找一個能做的stage1
-                    if P[bestJob[0], bestJob[1]]: ## 如果那個stage2 本身是有東西的(p不為0)
-                        if(P[job[0],job[1]] <= bestJob[2] - startTime): ## 先該job檢查能不能塞
-                            resultList[job[0], job[1]] = [chosenMachineInd, max(startTime, job[2]), max(startTime, job[2]) + P[job[0], job[1]]]
-                            Scheduled[job[1]] += 1
-                            break
+           for job in data:
+               if job != bestJob and job[0] == 0: ## 找一個能做的stage1
+                   if P[bestJob[0], bestJob[1]]: ## 如果那個best job 的 stage2 本身是有東西的(p不為0)
+                       if(P[job[0],job[1]] <= bestJob[2] - startTime): ## 先該job檢查能不能塞
+                           resultList[job[0], job[1]] = [chosenMachineInd, max(startTime, job[2]), max(startTime, job[2]) + P[job[0], job[1]]]
+                           Scheduled[job[1]] += 1
+                           startTime = max(startTime, job[2]) + P[job[0], job[1]] ## 更新 startime
+               elif job != bestJob and job[0] == 1: ## 找一個能做的stage2
+                   if P[bestJob[0], bestJob[1]]: ## 如果那個best job 的 stage2 本身是有東西的(p不為0)
+                       if(bestJob[2] - P[job[0], job[1]] >= startTime and bestJob[2] - P[job[0], job[1]] >= job[2]): ## 檢查該job能不能塞 可能的最晚開始時間大於machine可以的startime跟自己的starttime
+                           resultList[job[0], job[1]] = [chosenMachineInd, max(startTime, job[2]), max(startTime, job[2]) + P[job[0], job[1]]]
+                           Scheduled[job[1]] += 1
+                           startTime = max(startTime, job[2]) + P[job[0], job[1]] ## 更新 startime
+
+             
 
 
 
