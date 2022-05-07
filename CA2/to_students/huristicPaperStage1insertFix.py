@@ -331,14 +331,14 @@ def huristicPaperStage1InsertFix(fileName):
         y.append(tempj)
     # print('y', y)
     
-    gantt_plot_2_3(x, Plist, y, 3)
+    # gantt_plot_2_3(x, Plist, y, 3)
 
 
     return makespan, tardyAmount
 
 # ms, ta = huristic2_2_2("C:/Users/user/gurobi/CA2/data/instance 1.csv")
 ms, ta = huristicPaperStage1InsertFix("C:/Users/user/gurobi/CA2/data/instance 2.csv")
-# print(ms, ta)
+print(ms, ta)
 # ms, ta = huristic2_2_2("C:/Users/user/gurobi/CA2/data/instance 2.csv")
 # ms, ta = huristic2_2_2("C:/Users/user/gurobi/CA2/tests/test5.csv")
 # for i in range(10):
