@@ -1,7 +1,7 @@
 import pandas as pd
-# import os
+import os
 import math
-# from tardy import gantt_plot_2_3
+from tardy import gantt_plot_2_3
 
 '''
 compare tardy amount
@@ -143,8 +143,8 @@ def chooseMachineByFormulation(pi, pj, MT, M, D):
 ### def
 
 ### def
-def heuristic_algorithm(file_path):
-    df = pd.read_csv(file_path)
+def huristicPaperStage1InsertFixStage2(fileName):
+    df = pd.read_csv(fileName)
     # df = pd.read_csv("C:/Users/user/gurobi/CA2/to students/data/instance1.csv")
     # print(df)
     # print(df['Due Time'].size)
@@ -205,9 +205,32 @@ def heuristic_algorithm(file_path):
 
     R = 0.4 #hyper...
     K = math.log(J/max_amount)*1.2 - R ## some constant from paper
+    # print("P", P)
+    # print("D", D)
+    # print("M", M)
+
+    # print(compareTardy(0, 9, 0, 1, P, D,0, 0, J, Scheduled))
+    # print(compareMakeSpan(0, 9, 0, 1, P, len(MT), J))
+
+    ## -----------------------
 
     machinePriortylist = chooseMachineByProcessTime(MT)
+    # print("machinePriortylist1", machinePriortylist)
 
+    # print("P", P)
+    # print("D", D)
+    # print("M", M)
+
+    # print(compareTardy(0, 9, 0, 1, P, D,0, J, Scheduled))
+    # print(compareMakeSpan(0, 9, 0, 1, P, len(MT), J))
+    # print(chooseMachineByProcessTime(0, 3, MT, M))
+
+    ### -----------------------
+
+    # machinePriortylist = chooseMachineByProcessTime(MT)
+    # print(machinePriortylist)
+
+    ### huristic part
     resultList = {} ##(i, j)->[m, starttime, endtime]  list, Pij assigned to m on starttime// normal index
     while 0 in Scheduled or 1 in Scheduled:
 
@@ -240,22 +263,26 @@ def heuristic_algorithm(file_path):
         Scheduled[bestJob[1]] += 1
 
         if(bestJob[0] == 1 and max(startTime, bestJob[2]) == bestJob[2]): ## 挑的是stage2，而且前面有一段空檔
-           for job in data:
-               if job != bestJob and job[0] == 0: ## 找一個能做的stage1
-                   if P[bestJob[0], bestJob[1]]: ## 如果那個best job 的 stage2 本身是有東西的(p不為0)
-                       if(P[job[0],job[1]] <= bestJob[2] - startTime): ## 先該job檢查能不能塞
-                           resultList[job[0], job[1]] = [chosenMachineInd, max(startTime, job[2]), max(startTime, job[2]) + P[job[0], job[1]]]
-                           Scheduled[job[1]] += 1
-                           startTime = max(startTime, job[2]) + P[job[0], job[1]] ## 更新 startime
-               elif job != bestJob and job[0] == 1: ## 找一個能做的stage2
-                   if P[bestJob[0], bestJob[1]]: ## 如果那個best job 的 stage2 本身是有東西的(p不為0)
-                       if(bestJob[2] - P[job[0], job[1]] >= startTime and bestJob[2] - P[job[0], job[1]] >= job[2]): ## 檢查該job能不能塞 可能的最晚開始時間大於machine可以的startime跟自己的starttime
-                           resultList[job[0], job[1]] = [chosenMachineInd, max(startTime, job[2]), max(startTime, job[2]) + P[job[0], job[1]]]
-                           Scheduled[job[1]] += 1
-                           startTime = max(startTime, job[2]) + P[job[0], job[1]] ## 更新 startime
+            for job in data:
+                if job != bestJob and job[0] == 0: ## 找一個能做的stage1
+                    if P[bestJob[0], bestJob[1]]: ## 如果那個best job 的 stage2 本身是有東西的(p不為0)
+                        if(P[job[0],job[1]] <= bestJob[2] - startTime): ## 先該job檢查能不能塞
+                            resultList[job[0], job[1]] = [chosenMachineInd, max(startTime, job[2]), max(startTime, job[2]) + P[job[0], job[1]]]
+                            Scheduled[job[1]] += 1
+                            startTime = max(startTime, job[2]) + P[job[0], job[1]] ## 更新 startime
+                elif job != bestJob and job[0] == 1: ## 找一個能做的stage2
+                    if P[bestJob[0], bestJob[1]]: ## 如果那個best job 的 stage2 本身是有東西的(p不為0)
+                        if(bestJob[2] - P[job[0], job[1]] >= startTime and bestJob[2] - P[job[0], job[1]] >= job[2]): ## 檢查該job能不能塞 可能的最晚開始時間大於machine可以的startime跟自己的starttime
+                            resultList[job[0], job[1]] = [chosenMachineInd, max(startTime, job[2]), max(startTime, job[2]) + P[job[0], job[1]]]
+                            Scheduled[job[1]] += 1
+                            startTime = max(startTime, job[2]) + P[job[0], job[1]] ## 更新 startime
 
-             
+                    
 
+        
+        
+        # print(bestJob)
+        # print('\n', '=================================', '\n') 
 
 
     # print("result list", resultList)
@@ -276,67 +303,62 @@ def heuristic_algorithm(file_path):
         if(completionTime > makespan):
             makespan = completionTime
     
-    # end time of Pji
-    completion_time = []
+    # print("makespan:", makespan)
+    # print("tardy amount:", tardyAmount)
+
+    # print("fileName", fileName)
+    x = []
     for j in range(J):
         temp = []
         for i in range(2):
             temp.append(resultList[i, j][2])
-        completion_time.append(temp)
+        x.append(temp)
 
-    machine = []
+    # print('x', x)
+
+    Plist = []
     for j in range(J):
         temp = []
         for i in range(2):
-            temp.append(resultList[i, j][0] + 1)
-        machine.append(temp)
+            temp.append(P[i,j])
+        Plist.append(temp)
+    # print('Plist', Plist)
+    
+    y = []
+    for j in range(J):
+        tempj = []
+        for i in range(2):
+            tempi = []
+            for m in range(max_amount):
+                if(resultList[i,j][0] == m):
+                    tempi.append(1)
+                else:
+                    tempi.append(0)
+            tempj.append(tempi)
+        y.append(tempj)
+    # print('y', y)
+    
+    # print(makespan, tardyAmount)
+
+    # gantt_plot_2_3(x, Plist, y, 3)
 
     
 
+    return makespan, tardyAmount
 
-    return machine, completion_time
+# ms, ta = huristic2_2_2("C:/Users/user/gurobi/CA2/data/instance 1.csv")
+ms, ta = huristicPaperStage1InsertFixStage2("C:/Users/user/gurobi/CA2/data/instance3.csv")
+print(ms, ta)
+# ms, ta = huristic2_2_2("C:/Users/user/gurobi/CA2/data/instance 2.csv")
+# ms, ta = huristic2_2_2("C:/Users/user/gurobi/CA2/tests/test5.csv")
+# for i in range(10):
+#     pa = "C:/Users/user/gurobi/CA2/tests/test"+ str(i) + ".csv"
+#     ms, ta = huristic2_2_2(pa)
 
-# m, c = heuristic_algorithm('C:/Users/user/gurobi/CA2/data/instance1.csv')
-# print(m)
-# print(c)
-# def heuristic_algorithm(file_path):
-    
-#     '''
-#     1. Write your heuristic algorithm here.
-#     2. We would call this function in CA2_grading_program.py to evaluate your algorithm.
-#     3. Please do not change the function name and the file name.
-#     4. The parameter is the file path of a data file, whose format is specified in the document. 
-#     5. You need to return your schedule in two lists "machine" and "completion_time".
-#         (a) machine[j][0] is the machine ID of the machine to process the first stage of job j + 1, and 
-#             machine[j][1] is the machine to process the second stage of job j + 1.
-#         (b) completion_time[j][0] is the completion time of the first stage of job j + 1, and 
-#             completion_time[j][1] is the completion time of the second stage of job j + 1. 
-#         Note 1. If you have n jobs, both the two lists are n by 2 (n rows, 2 columns). 
-#         Note 2. In the list "machine", you should record the IDs of machines 
-#                 (i.e., to let machine 1 process the first stage of job 1, 
-#                 you should have machine[0][0] == 1 rather than machine[0][0] == 0).
-#     6. You only need to submit this algorithm_module.py.
-#     '''
-    
-#     import csv
-    
-#     # read data and store the information into your self-defined variables
-#     fp = open(file_path, 'r', newline = '')
-#     header = fp.readline() 
-#     reader = csv.reader(fp, delimiter = ',')
-#     # for a_row in reader:
-#     #     print(a_row) # a_row is a list
-#     # ...
-    
-    
-    
 
-#     # start your algorithm here
-#     machine = []
-#     completion_time = []
-#     # ...  
-    
-    
-    
-#     return machine, completion_time
+
+
+
+
+
 
